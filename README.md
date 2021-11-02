@@ -11,7 +11,6 @@ $ npm i vue-router --save
 $ npm i scriptjs --save  
 $ npm i axios --save
 $ npm i @google/markerclusterer --save
-$ npm i vue-burger-menu --save
 $ npm i bootstrap-vue --save
 $ npm i bootstrap --save
 ```
