@@ -13,6 +13,7 @@ $ npm i axios --save
 $ npm i @google/markerclusterer --save
 $ npm i bootstrap-vue --save
 $ npm i bootstrap --save
+$ npm i vue-burger-menu --save
 ```
 ### Compiles and hot-reloads for development
 ```
