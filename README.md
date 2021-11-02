@@ -2,7 +2,7 @@
 
 ## Project setup
 ```
-$ npm install
+$ vue create my-project
 ```
 ```
 $ npm i aws-sdk --save
