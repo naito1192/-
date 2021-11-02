@@ -1,0 +1,32 @@
+<template>
+  <div id="app">
+    <router-view />      
+  </div>
+  
+</template>
+
+<script>
+import AWS from "aws-sdk"
+export default {
+   name:"app",
+   created(){
+     var myCredentials = new AWS.CognitoIdentityCredentials({IdentityPoolId:process.env.VUE_APP_ID_POOL_ID});
+
+     AWS.config.update({
+       credentials:myCredentials,
+       region: "ap-northeast-1"
+     })
+   }
+}
+</script>
+
+<!--<style>
+#app {
+  font-family: Avenir, Helvetica, Arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-align: center;
+  color: #2c3e50;
+  margin-top: 60px;
+}
+</style>-->

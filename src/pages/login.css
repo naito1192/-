@@ -1,0 +1,36 @@
+  .form{
+    margin-top:20px;
+
+  }
+  .user{
+    width:45%;
+    text-align:right;
+    display:inline-block;
+    font-size:40px;
+    margin-top:10px;
+    margin-right:5%
+  }
+  .user-box{
+    height:50px;
+    fontsize:30px;
+
+  }
+  .pass{
+    width:45%;
+    text-align:right;
+    display:inline-block;
+    font-size:40px;
+    margin-top:40px;
+    margin-right:5%
+  }
+  .pass-box{
+    height:50px;
+    fontsize:30px;
+
+  }
+  .login-button{
+    font-size:30px;
+    background-color:white;
+    margin-left:50%;
+    margin-top:50px;
+  }

@@ -1,0 +1,197 @@
+<template>
+  <div class="signup">
+    <h2>ユーザー登録</h2>          
+      <div>
+        メール:
+        <input type="text" placeholder="メール" v-model="username" required>
+      </div>
+      <div>
+        パスワード:
+        <input type="password" placeholder="パスワード" v-model="password" required>
+      </div>
+      <div>
+        パスワード(確認):
+        <input type="password" placeholder="パスワード(確認)" v-model="passwordConfirm" required>
+      </div>
+      <button @click="signup(0)">管理者として登録</button>
+      <button @click="signup(1)">ユーザーとして登録します</button>
+  </div>
+</template>
+
+<style lang="scss">
+</style>
+
+<script>
+
+  //ライブラリのインポート
+  import {
+    CognitoUserPool,
+    CognitoUserAttribute
+  } from 'amazon-cognito-identity-js'
+  import AWS from 'aws-sdk'
+  
+ 
+  
+  export default {
+    name: 'Signup',
+    //グローバル変数を指定
+    data () {
+      return {
+        username: '',
+        password: '',
+        passwordConfirm: ''
+      }
+    },
+    created(){
+      //ログイン処理
+
+      //AWSSDK設定
+       var myCredentials = new AWS.CognitoIdentityCredentials({IdentityPoolId:process.env.VUE_APP_ID_POOL_ID});
+
+       AWS.config.update({
+         credentials:myCredentials,
+         region: "ap-northeast-1"
+       });   
+
+      //ユーザープール設定
+      var poolData = {
+         UserPoolId: process.env.VUE_APP_POOL_ID,
+         ClientId: process.env.VUE_APP_CLIENT_ID,
+       };
+       const userPool = new CognitoUserPool(poolData);
+       
+       //ログインユーザー取得
+       const cognitoUser = userPool.getCurrentUser();
+       
+       //変数指定
+       var currentUserData = {};
+       var i=0;
+       
+       //cognito使用関数の設定
+       var cognitoidentityserviceprovider = new AWS.CognitoIdentityServiceProvider();
+
+       //ログインユーザーが無ければログインページに遷移
+       if (cognitoUser != null) {
+         cognitoUser.getSession(function(err) {
+            if (err) {
+                console.log(err);
+                location.assign('http://54.250.168.147:8080/login?id=users');
+            } else {
+                // ユーザの属性を取得しエラーなら遷移
+                cognitoUser.getUserAttributes(function(err, result) {
+                    if (err) {
+                        location.assign('http://54.250.168.147:8080/login?id=users');
+                    }
+
+                    // 取得した属性情報を連想配列に格納
+                    for (i = 0; i < result.length; i++) {
+                        currentUserData[result[i].getName()] = result[i].getValue();
+                    }
+                    //group取得しエラーなら遷移
+                    var params={
+                      UserPoolId: process.env.VUE_APP_POOL_ID,
+                      Username: currentUserData["email"]
+                    }
+
+                   cognitoidentityserviceprovider.adminListGroupsForUser(params, function(err, data) {
+                     if (err){
+                         location.assign('http://54.250.168.147:8080/login?id=users');
+                     }
+                     //グループが１つであれば遷移
+                     if(data.Groups[1]==null){
+                         location.assign('http://54.250.168.147:8080/login?id=users');
+                     }
+                   });
+
+                });
+            }
+         });
+       } else {
+        location.assign('http://54.250.168.147:8080/login?id=users');
+      }
+    },
+    methods:{
+     //ユーザー作成関数
+      signup(num){
+       //プール情報を設定
+       var poolData = {
+         UserPoolId: process.env.VUE_APP_POOL_ID, 
+         ClientId: process.env.VUE_APP_CLIENT_ID, 
+       };
+       
+       //AWSSDK設定
+       var myCredentials = new AWS.CognitoIdentityCredentials({IdentityPoolId:process.env.VUE_APP_ID_POOL_ID});
+
+       AWS.config.update({
+         credentials:myCredentials,
+         region: "ap-northeast-1"
+       });              
+      
+       const cognitoidentityserviceprovider = new AWS.CognitoIdentityServiceProvider();
+       
+       //cognitoidプールに送信するパラメーター設定
+       const u_params = {
+         GroupName: 'user',        
+         UserPoolId: process.env.VUE_APP_POOL_ID, 
+         Username: this.username 
+       };
+       const a_params = {
+         GroupName: 'Administrator',
+         UserPoolId: process.env.VUE_APP_POOL_ID,
+         Username: this.username
+       };
+
+       //cognitoユーザープールに送信する
+       var userPool = new CognitoUserPool(poolData);
+       var username = this.username;
+       var password = this.password;
+       var confirm = this.passwordConfirm;
+       
+ 
+       const dataEmail = { Name: 'email', Value: username };
+       const attributeList = [];
+       attributeList.push(new CognitoUserAttribute(dataEmail));
+       
+        
+       //passwordと確認passwordが一致するかを確認       
+       if(password==confirm){
+       
+       //ユーザーをユーザープールに追加
+       userPool.signUp(username, password, attributeList, null, function(
+           err,
+           result
+       ) {
+           if (err) {
+             alert('エラー:'+err.message || JSON.stringify(err));
+             return;
+           }
+
+           //ユーザーをグループに追加
+           cognitoidentityserviceprovider.adminAddUserToGroup(u_params, function(err, data) {
+          
+             if (err){
+               console.log(err);
+               return;
+             }
+             if(num==0){
+               cognitoidentityserviceprovider.adminAddUserToGroup(a_params, function(err) {
+
+                 if (err){
+                   console.log(err);
+                   return;
+                 }
+               });   
+             }
+             console.log(data);            
+             var cognitoUser = result.user;
+             console.log('user name is ' + cognitoUser.getUsername());
+             alert("アカウントの作成に成功しました");
+           
+           });
+       });
+       }else{alert("異なるパスワードが入力されています");}
+      }
+    }
+  }
+    
+</script>

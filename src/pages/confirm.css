@@ -1,0 +1,19 @@
+  .confirm p{
+    width:45%;
+    text-align:right;
+    display:inline-block;
+    font-size:40px;
+    margin-top:10px;
+    margin-right:5%;
+  }
+  .confirm input{
+    height:50px;
+    fontsize:30px;
+
+  }
+  .confirm-button{
+    font-size:30px;
+    background-color:white;
+    margin-left:50%;
+    margin-top:50px;
+  }

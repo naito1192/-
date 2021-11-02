@@ -1,0 +1,25 @@
+  .mail p{
+    width:45%;
+    text-align:right;
+    display:inline-block;
+    font-size:40px;
+    margin-top:30px;
+    margin-right:5%
+  }
+  .mail input{
+    height:50px;
+    fontsize:30px;
+
+  }
+  .user-button{
+    font-size:30px;
+    background-color:white;
+    margin-left:50%;
+    margin-top:50px;
+  }
+  .admin-button{
+    font-size:30px;
+    background-color:white;
+    margin-left:50px;
+    margin-top:50px;
+  }

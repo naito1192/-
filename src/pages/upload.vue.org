@@ -1,0 +1,190 @@
+<template>
+  <div class="upload">
+    <h2>画像アップロード</h2>
+      <form>
+      <div>
+        画像を選択してください:
+        <input type="file" ref="input" placeholder="ファイルを選択" @change="FILE" accept="image/jpeg" required multiple>
+        ※複数画像選択の場合はCtrlを押しながら選択してください
+      </div>
+      <select v-model="select" >
+	<option>修理中</option>
+	<option>修理完了</option>
+      </select>
+      
+      </form>
+      <button @click="upload">アップロード</button>
+     
+     <img :src="img_url">
+    
+  </div>
+</template>
+
+<style lang="scss">
+</style>
+
+<script>
+
+  //ライブラリのインポート
+  import {
+    CognitoUserPool
+  } from 'amazon-cognito-identity-js'
+ 
+  import AWS from 'aws-sdk'
+  import axios from 'axios'
+
+
+  export default {
+   name:"upload",
+   //グローバル変数設定
+   data(){
+     return{
+       upload_img: [],
+       img_name: [],
+       api_url: [],
+       img_url: '',
+       select: ''
+     };
+   },
+   created(){
+      //ログイン処理
+
+      //AWSSDK設定
+       var myCredentials = new AWS.CognitoIdentityCredentials({IdentityPoolId:process.env.VUE_APP_ID_POOL_ID});
+
+       AWS.config.update({
+         credentials:myCredentials,
+         region: "ap-northeast-1"
+       });
+
+      //ユーザープール設定
+      var poolData = {
+         UserPoolId: process.env.VUE_APP_POOL_ID,
+         ClientId: process.env.VUE_APP_CLIENT_ID,
+       };
+       const userPool = new CognitoUserPool(poolData);
+       //ログインユーザー取得
+       const cognitoUser = userPool.getCurrentUser();
+
+       //変数指定
+       var currentUserData = {};
+       var i=0;
+
+       //cognito使用関数の設定
+       var cognitoidentityserviceprovider = new AWS.CognitoIdentityServiceProvider();
+
+       //ログインユーザーが無ければログインページに遷移
+       if (cognitoUser != null) {
+         cognitoUser.getSession(function(err) {
+            if (err) {
+                console.log(err);
+                location.assign('http://54.250.168.147:8080/login?id=users');
+            } else {
+                // ユーザの属性を取得しエラーなら遷移
+                cognitoUser.getUserAttributes(function(err, result) {
+                    if (err) {
+                        location.assign('http://54.250.168.147:8080/login?id=users');
+                    }
+
+                    // 取得した属性情報を連想配列に格納
+                    for (i = 0; i < result.length; i++) {
+                        currentUserData[result[i].getName()] = result[i].getValue();
+                    }
+                    //group取得しエラーなら遷移
+                    var params={
+                      UserPoolId: process.env.VUE_APP_POOL_ID,
+                      Username: currentUserData["email"]
+                    }
+                    cognitoidentityserviceprovider.adminListGroupsForUser(params, function(err, data) {
+                     if (err){
+                         location.assign('http://54.250.168.147:8080/login?id=users');
+                     }
+                     //グループに所属していなければ遷移
+                     if(data.Groups[0]==null){
+                         location.assign('http://54.250.168.147:8080/login?id=users');
+                     }
+                   });
+
+                });
+            }
+         });
+       } else {
+        location.assign('http://54.250.168.147:8080/login?id=users');
+      }
+    },
+    methods:{
+
+      //inputされたファイルを取得
+      FILE(e) {
+        const files = e.target.files || e.dataTransfer.files;
+	
+        // ファイルが選択されたらリストに入れる
+        for (var i = 0; i < files.length; i++) {
+          this.upload_img.push(files[i]);
+          this.img_name.push(files[i].name);
+         
+
+          //得た写真をブラウザに表示（テスト用）
+          this.img_url=URL.createObjectURL(this.upload_img[i]);
+        }
+      },
+
+     //画像送信関数
+      putimage:async function(url,img){
+       //送信処理
+       axios.put(
+          //送信URL
+          url,
+          //送信画像
+          img,
+          //送信画像の情報
+          {
+            headers:{
+              'content-type':'image/jpeg'
+            }
+          
+          //送信成功時処理
+          }).then(responce =>{
+             alert("ok");
+             console.log(responce);
+
+          //送信失敗時処理  
+          }).catch(e=>{
+             alert(e);
+        });
+      },
+
+     //複数画像送信関数
+      upload:async function(){
+
+        if(this.select==""){
+           alert("選択肢を入れてください");
+        }else if(this.select=="修理中"){
+          
+          for (var i = 0; i < this.img_name.length; i++) {
+            this.api_url.push("/v1/cdn-dis-explanatory-image/"+"0_"+this.img_name[i]);
+          }
+         
+
+          //inputされた画像分処理を繰り返す
+          for (var j = 0; j < this.api_url.length; j++) {
+            await this.putimage(this.api_url[j],this.upload_img[j]);
+          }
+
+        }else if(this.select=="修理完了"){
+          for (var x = 0; x < this.img_name.length; x++) {
+            this.api_url.push("/v1/cdn-dis-explanatory-image/"+"1_"+this.img_name[x]);
+          }
+          
+
+          //inputされた画像分処理を繰り返す
+          for (var y = 0; y < this.api_url.length; y++) {
+            await this.putimage(this.api_url[y],this.upload_img[y]);
+          }
+        }
+       
+      }
+
+    }
+  }
+</script>

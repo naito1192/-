@@ -1,0 +1,29 @@
+  .upload p{
+    width:45%;
+    text-align:right;
+    display:inline-block;
+    font-size:40px;
+    margin-top:30px;
+    margin-right:5%
+  }
+  .upload input{
+    height:70px;
+    font-size:30px;
+  }
+  .upload select{
+    height:40px;
+  }
+  .warm{
+    margin-left:50%;
+  }
+  .upload-button{
+    font-size:30px;
+    background-color:white;
+    margin-left:50%;
+    margin-top:50px;
+  }
+  .explanation{
+    font-size:20px;
+    text-align:center;
+    margin-top:25px;
+  }
