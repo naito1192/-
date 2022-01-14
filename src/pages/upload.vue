@@ -110,7 +110,7 @@
             if(!this.img_name.length){
               break;
             }else{
-              this.api_url.push("/v1/cdn-dis-explanatory-image/"+"0_"+this.img_name[0]);
+              this.api_url.push("/v1/S3URL/"+"0_"+this.img_name[0]);
               this.img_name.splice(0,1);
             }
          
@@ -140,7 +140,7 @@
             if(!this.img_name.length){
               break;
             }else{
-              this.api_url.push("/v1/cdn-dis-explanatory-image/"+"1_"+this.img_name[0]);
+              this.api_url.push("/v1/S3URL/"+"1_"+this.img_name[0]);
               this.img_name.splice(0,1);
             }
 
