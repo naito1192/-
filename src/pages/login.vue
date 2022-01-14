@@ -82,7 +82,7 @@
             var url = new URL(window.location.href);
             var params = url.searchParams;
             var id = params.get('id');
-            var result="http://54.250.168.147:8080/"+id;
+            var result="http://URL:8080/"+id;
             location.assign(result);
             
 
