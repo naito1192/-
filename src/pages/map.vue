@@ -139,11 +139,11 @@
               //await getimg(exifdata[0][i]["filename"][j],imgurl);
               //情報ウインドに出すコンテンツ作成
               if(exifdata[0][i]["status"][j]==0){
-                contents = contents + "<a target='_blank' href='https://1mbd6zxh6g.execute-api.ap-northeast-1.amazonaws.com/v3/?name=" + exifdata[0][i]["filename"][j] + "'><img style='vertical-align:top;' width=" + exifdata[0][i]["w"][j]/4 + " height=" + exifdata[0][i]["h"][j]/4 + " src=" + imgurl[exifdata[0][i]["filename"][j]] + "></a>　<div style='display:inline-block'><p>状態：作業中</p><p>日付："+exifdata[0][i]["time"][j]+"</p><p>緯度："+exifdata[0][i]["lat"][j]+"</p><p>経度："+exifdata[0][i]["lng"][j]+"</p></div><br><br>";
+                contents = contents + "<a target='_blank' href='url/v3/?name=" + exifdata[0][i]["filename"][j] + "'><img style='vertical-align:top;' width=" + exifdata[0][i]["w"][j]/4 + " height=" + exifdata[0][i]["h"][j]/4 + " src=" + imgurl[exifdata[0][i]["filename"][j]] + "></a>　<div style='display:inline-block'><p>状態：作業中</p><p>日付："+exifdata[0][i]["time"][j]+"</p><p>緯度："+exifdata[0][i]["lat"][j]+"</p><p>経度："+exifdata[0][i]["lng"][j]+"</p></div><br><br>";
                
               }
               if(exifdata[0][i]["status"][j]==1){
-                contents = contents + "<a target='_blank' href='https://1mbd6zxh6g.execute-api.ap-northeast-1.amazonaws.com/v3/?name=" + exifdata[0][i]["filename"][j] + "'><img style='vertical-align:top;' width=" + exifdata[0][i]["w"][j]/4 + " height=" + exifdata[0][i]["h"][j]/4 + " src=" + imgurl[exifdata[0][i]["filename"][j]] + "></a>　<div style='display:inline-block'><p>状態：作業完了</p><p>日付："+exifdata[0][i]["time"][j]+"</p><p>緯度："+exifdata[0][i]["lat"][j]+"</p><p>経度："+exifdata[0][i]["lng"][j]+"</p></div><br><br>";                
+                contents = contents + "<a target='_blank' href='url/v3/?name=" + exifdata[0][i]["filename"][j] + "'><img style='vertical-align:top;' width=" + exifdata[0][i]["w"][j]/4 + " height=" + exifdata[0][i]["h"][j]/4 + " src=" + imgurl[exifdata[0][i]["filename"][j]] + "></a>　<div style='display:inline-block'><p>状態：作業完了</p><p>日付："+exifdata[0][i]["time"][j]+"</p><p>緯度："+exifdata[0][i]["lat"][j]+"</p><p>経度："+exifdata[0][i]["lng"][j]+"</p></div><br><br>";                
                 
              }
              
