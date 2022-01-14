@@ -2,13 +2,13 @@ module.exports = {
   devServer: {
     proxy:{
       '/v1':{
-         target:'https://ayueec3is3.execute-api.ap-northeast-1.amazonaws.com'
+         target:'APIURL'
       },
       '/v2':{
-         target:'https://alojamhogk.execute-api.ap-northeast-1.amazonaws.com'
+         target:'APIURL'
      },
      '/v3':{
-         target:'https://1mbd6zxh6g.execute-api.ap-northeast-1.amazonaws.com'
+         target:'APIURL'
      }
     }
   }
